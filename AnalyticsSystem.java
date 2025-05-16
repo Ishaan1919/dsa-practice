@@ -3,12 +3,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
-enum FEATURE{
+
+enum ActionEnum{
     feature1,feature2,feature3;
 }
 
 class AnalyticsStore{
-    public List<FEATURE> analyticStoreList;
+    public List<ActionEnum> analyticStoreList;
 
     public AnalyticsStore(){
         this.analyticStoreList = new ArrayList<>();
@@ -18,8 +19,15 @@ class AnalyticsStore{
 
 
 public class AnalyticsSystem {
+    public static void main(String[] args) {
+        for(ActionEnum i:ActionEnum.values()){
+            System.out.println(i.name());
+        }
+    }
+
+
     int k;
-    Queue<FEATURE> frequentFeature = new LinkedList<>();
+    Queue<ActionEnum> frequentActionEnum = new LinkedList<>();
     AnalyticsStore analyticsStore;
 
     public AnalyticsSystem(int k){
@@ -27,10 +35,10 @@ public class AnalyticsSystem {
         this.analyticsStore = new AnalyticsStore();
     }
 
-    public void registerAction(FEATURE feature){
-        frequentFeature.offer(feature);
-        if(frequentFeature.size()==k){
-            this.analyticsStore.analyticStoreList.add(frequentFeature.poll());
+    public void registerAction(ActionEnum ActionEnum){
+        frequentActionEnum.offer(ActionEnum);
+        if(frequentActionEnum.size()==k){
+            this.analyticsStore.analyticStoreList.add(frequentActionEnum.poll());
         }
     }
 
@@ -39,17 +47,48 @@ public class AnalyticsSystem {
     }
 
     public int getTotalNumberOfLoggedActionsButNotSentToTheAnalyticsStore(){
-        return this.frequentFeature.size();
+        return this.frequentActionEnum.size();
     }
 
-    public List<FEATURE> getMostFrequentlyUsedActions(){
+    public List<ActionEnum> getMostFrequentlyUsedActions(){
+
         if(analyticsStore.analyticStoreList.isEmpty()) return new ArrayList<>();
-        List<FEATURE> list = new ArrayList<>();
-        int n = analyticsStore.analyticStoreList.size();
-        while(n-->0){
-            list.add(frequentFeature.peek());
-            frequentFeature.offer(frequentFeature.poll());
+        List<ActionEnum> store = analyticsStore.analyticStoreList;
+        int n = store.size();
+
+        List<ActionEnum> maxFreq = new ArrayList<>();
+        int max = 0;
+        for(ActionEnum i:ActionEnum.values()){
+
+            int freq = 0;
+            for(ActionEnum a:store){
+                if(i==a){
+                    freq++;
+                }
+            }
+            if(freq>max){
+                max = freq;
+                maxFreq = new ArrayList<>();
+                maxFreq.add(i);
+            }
+            else if(freq==max){
+                maxFreq.add(i);
+            }
         }
-        return list;
+
+        maxFreq.sort((one , two) -> {
+            return one.name().compareTo(two.name());
+        });
+
+        return maxFreq;
+
+        // if(analyticsStore.analyticStoreList.isEmpty()) return new ArrayList<>();
+        // List<ActionEnum> list = new ArrayList<>();
+        // int n = analyticsStore.analyticStoreList.size();
+        // while(n-->0){
+        //     list.add(frequentActionEnum.peek());
+        //     frequentActionEnum.offer(frequentActionEnum.poll());
+        // }
+        // return list;
     }
 }
