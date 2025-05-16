@@ -15,6 +15,12 @@ class AnalyticsStore{
         this.analyticStoreList = new ArrayList<>();
     }
 
+    public void storeActions(Queue<ActionEnum> frequentActionEnum){
+        while(!frequentActionEnum.isEmpty()){
+                this.analyticStoreList.add(frequentActionEnum.poll());
+            }
+    }
+
 }
 
 
@@ -38,7 +44,7 @@ public class AnalyticsSystem {
     public void registerAction(ActionEnum ActionEnum){
         frequentActionEnum.offer(ActionEnum);
         if(frequentActionEnum.size()==k){
-            this.analyticsStore.analyticStoreList.add(frequentActionEnum.poll());
+            analyticsStore.storeActions(frequentActionEnum);
         }
     }
 
